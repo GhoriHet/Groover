@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 function Layout({ children }) {
     const [toggle, setToggle] = React.useState(true);
@@ -18,30 +19,27 @@ function Layout({ children }) {
                 </div>
                 <div class="menu-items">
                     <ul class="nav-links">
-                        <li><a href="#">
+
+                        <li><NavLink to="/admin/">
                             <i class="uil uil-estate"></i>
-                            <span class="link-name">Dahsboard</span>
-                        </a></li>
-                        <li><a href="#">
+                            <span class="link-name">Dashboard</span>
+                        </NavLink></li>
+
+                        <li><NavLink to="/admin/add-category">
                             <i class="uil uil-files-landscapes"></i>
-                            <span class="link-name">Content</span>
-                        </a></li>
-                        <li><a href="#">
+                            <span class="link-name">Add Category</span>
+                        </NavLink></li>
+
+                        <li><NavLink to="/admin/add-subcategory">
                             <i class="uil uil-chart"></i>
-                            <span class="link-name">Analytics</span>
-                        </a></li>
-                        <li><a href="#">
+                            <span class="link-name">Add Subcategory</span>
+                        </NavLink></li>
+
+                        <li><NavLink to="/admin/add-product">
                             <i class="uil uil-thumbs-up"></i>
-                            <span class="link-name">Like</span>
-                        </a></li>
-                        <li><a href="#">
-                            <i class="uil uil-comments"></i>
-                            <span class="link-name">Comment</span>
-                        </a></li>
-                        <li><a href="#">
-                            <i class="uil uil-share"></i>
-                            <span class="link-name">Share</span>
-                        </a></li>
+                            <span class="link-name">Add Product</span>
+                        </NavLink></li>
+                        
                     </ul>
 
                     <ul class="logout-mode">
