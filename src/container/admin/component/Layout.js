@@ -1,5 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import CategoryIcon from '@mui/icons-material/Category';
+import ClassIcon from '@mui/icons-material/Class';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 function Layout({ children }) {
     const [toggle, setToggle] = React.useState(true);
@@ -26,20 +29,20 @@ function Layout({ children }) {
                         </NavLink></li>
 
                         <li><NavLink to="/admin/add-category">
-                            <i class="uil uil-files-landscapes"></i>
+                            <CategoryIcon style={{ marginRight: '10px', fontSize: '24px', color: '#707070', marginLeft: '10px' }} />
                             <span class="link-name">Add Category</span>
                         </NavLink></li>
 
                         <li><NavLink to="/admin/add-subcategory">
-                            <i class="uil uil-chart"></i>
+                            <ClassIcon style={{ marginRight: '10px', fontSize: '24px', color: '#707070', marginLeft: '10px' }} />
                             <span class="link-name">Add Subcategory</span>
                         </NavLink></li>
 
                         <li><NavLink to="/admin/add-product">
-                            <i class="uil uil-thumbs-up"></i>
+                            <AddShoppingCartIcon style={{ marginRight: '10px', fontSize: '24px', color: '#707070', marginLeft: '10px' }} />
                             <span class="link-name">Add Product</span>
                         </NavLink></li>
-                        
+
                     </ul>
 
                     <ul class="logout-mode">

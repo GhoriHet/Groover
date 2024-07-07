@@ -1,32 +1,33 @@
 import React from 'react';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function Dashboard(props) {
     return (
         <div className="dash-content">
             <div className="overview">
                 <div className="title">
-                    <i className="uil uil-tachometer-fast-alt" />
+                    <DashboardIcon style={{ marginRight: '18px', fontSize: '28px', color: '#707070' }} />
                     <span className="text">Dashboard</span>
                 </div>
                 <div className="boxes">
                     <div className="box box1">
-                        <i className="uil uil-thumbs-up" />
-                        <span className="text">Total Likes</span>
+                        {/* <i className="uil uil-thumbs-up" /> */}
+                        <span className="text">Total Category</span>
                         <span className="number">50,120</span>
                     </div>
                     <div className="box box2">
-                        <i className="uil uil-comments" />
-                        <span className="text">Comments</span>
+                        {/* <i className="uil uil-comments" /> */}
+                        <span className="text">Total Subcategory</span>
                         <span className="number">20,120</span>
                     </div>
                     <div className="box box3">
-                        <i className="uil uil-share" />
-                        <span className="text">Total Share</span>
+                        {/* <i className="uil uil-share" /> */}
+                        <span className="text">Total Product</span>
                         <span className="number">10,120</span>
                     </div>
                 </div>
             </div>
-            <div className="activity">
+            {/* <div className="activity">
                 <div className="title">
                     <i className="uil uil-clock-three" />
                     <span className="text">Recent Activity</span>
@@ -83,7 +84,7 @@ function Dashboard(props) {
                         <span className="data-list">Liked</span>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
 
     );
