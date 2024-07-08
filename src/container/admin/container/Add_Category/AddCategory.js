@@ -1,4 +1,5 @@
 import React from 'react';
+import * as yup from "yup";
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -6,9 +7,21 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
+import { useFormik } from 'formik';
+import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
+import { useDispatch, useSelector } from 'react-redux';
 
 function AddCategory(props) {
     const [open, setOpen] = React.useState(false);
+
+    const dispatch = useDispatch();
+
+    const cateDataFetch = useSelector((state => state.category?.data?.data));
+    console.log(cateDataFetch)
+
+    React.useEffect(() => {
+        dispatch(fetchCategory())
+    }, [])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -19,6 +32,20 @@ function AddCategory(props) {
         // formik.resetForm()
         // setUpdate(null);
     }
+
+    const categoryValidation = yup.object({
+        cate_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
+        cate_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
+        file: yup.mixed().required()
+    });
+
+    const formik = useFormik({
+        initialValues: { cate_name: "", cate_desc: "", file: "" },
+        validationSchema: categoryValidation,
+        onSubmit: (values, action) => {
+            console.log(values)
+        }
+    })
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
@@ -51,6 +78,9 @@ function AddCategory(props) {
         { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
         { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
     ];
+
+    const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
+
     return (
         <>
             <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '65px' }}>
@@ -60,26 +90,36 @@ function AddCategory(props) {
             <Dialog id='addModal' open={open}>
                 <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Category</DialogTitle>
                 <DialogContent className='px-5 pb-4'>
-                    <form className='row' style={{ width: "500px", marginTop: '7px'}}>
+                    <form className='row' onSubmit={handleSubmit} style={{ width: "500px", marginTop: '7px' }}>
                         <div className="col-6 mb-3 form_field position-relative">
                             <TextField className='m-0' margin="dense" id="cate_name" label="Category Name" type="text" fullWidth name='cate_name' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediname}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.cate_name}
                             />
-                            {/* {errors.mediname && touched.mediname ? (
-                                <span className="d-block position-absolute form-error">{errors.mediname}</span>
-                            ) : null} */}
+                            {errors.cate_name && touched.cate_name ? (
+                                <span className="d-block position-absolute form-error">{errors.cate_name}</span>
+                            ) : null}
                         </div>
                         <div className="col-6 mb-3 form_field position-relative">
                             <TextField className='m-0' margin="dense" id="cate_desc" label="Category Description" type="text" fullWidth name='cate_desc' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediname}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.cate_desc}
                             />
-                            {/* {errors.mediname && touched.mediname ? (
-                                <span className="d-block position-absolute form-error">{errors.mediname}</span>
-                            ) : null} */}
+                            {errors.cate_desc && touched.cate_desc ? (
+                                <span className="d-block position-absolute form-error">{errors.cate_desc}</span>
+                            ) : null}
+                        </div>
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <input type='file' name='file'
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.file}
+                            />
+                            {errors.file && touched.file ? (
+                                <span className="d-block position-absolute form-error">{errors.file}</span>
+                            ) : null}
                         </div>
                         <div className='pt-3 col-12 text-center'>
                             <Button className='me-3' onClick={handleClose}>Cancel</Button>
