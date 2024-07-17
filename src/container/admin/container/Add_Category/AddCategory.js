@@ -7,127 +7,187 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 import { useFormik } from 'formik';
-import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
+import { deleteCategory, fetchCategory, postCategory, putCategory } from '../../../../Redux/Slice/AddCategory';
 import { useDispatch, useSelector } from 'react-redux';
 
 function AddCategory(props) {
     const [open, setOpen] = React.useState(false);
+    const [fileInputs, setFileInputs] = React.useState([0]);
+    const [update, setUpdate] = React.useState(false);
+    // const [currentCategory, setCurrentCategory] = React.useState(null);
 
     const dispatch = useDispatch();
-
-    const cateDataFetch = useSelector((state => state.category?.data?.data));
-    console.log(cateDataFetch)
+    const cateDataFetch = useSelector(state => state.category?.data);
 
     React.useEffect(() => {
-        dispatch(fetchCategory())
-    }, [])
+        dispatch(fetchCategory());
+    }, [dispatch]);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
-        setOpen(false)
-        // formik.resetForm()
-        // setUpdate(null);
+        setOpen(false);
+        formik.resetForm();
+        setFileInputs([]);
+        setUpdate(false);
     }
 
     const categoryValidation = yup.object({
-        cate_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
-        cate_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
-        file: yup.mixed().required()
+        category_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
+        category_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
+        avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required('Avatar is required'),
     });
 
     const formik = useFormik({
-        initialValues: { cate_name: "", cate_desc: "", file: "" },
+        initialValues: { category_name: "", category_desc: "", avatar: [] },
         validationSchema: categoryValidation,
-        onSubmit: (values, action) => {
-            console.log(values)
+        onSubmit: async (values) => {
+            const formData = new FormData();
+            formData.append('category_name', values.category_name);
+            formData.append('category_desc', values.category_desc);
+            values.avatar.forEach(file => {
+                formData.append('avatar', file);
+            });
+            await dispatch(postCategory(formData));
+
+            await dispatch(fetchCategory());
+            handleClose();
         }
-    })
+    });
+
+    React.useEffect(() => {
+        if (!update && formik.values.avatar.length > 0 && fileInputs.length === formik.values.avatar.length) {
+            setFileInputs([...fileInputs, fileInputs.length]);
+        }
+    }, [formik.values.avatar, fileInputs]);
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First name', width: 130 },
-        { field: 'lastName', headerName: 'Last name', width: 130 },
+        { field: 'id', headerName: 'Product ID', width: 290 },
+        { field: 'category_name', headerName: 'Category Name', width: 150 },
+        { field: 'category_desc', headerName: 'Category Description', width: 200 },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
-            width: 90,
+            field: 'avatar',
+            headerName: 'Images',
+            width: 250,
+            renderCell: (params) => (
+                <div style={{ display: 'flex', gap: '5px' }}>
+                    {params.value.map((image, index) => (
+                        <img key={index} src={image.url} alt={`Image ${index + 1}`} style={{ width: 50, height: 50 }} />
+                    ))}
+                </div>
+            ),
         },
         {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 160,
-            valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-        },
+            field: "action", headerName: "Action", flex: 1, sortable: false, disableColumnMenu: true,
+            renderCell: (params) => {
+                return (
+                    <>
+                        <IconButton aria-label="edit" type='button' onClick={() => handleUpdate(params.row)} >
+                            <EditIcon sx={{ fontSize: '20px' }} />
+                        </IconButton>
+                        <IconButton aria-label="delete" type='button' onClick={() => handleDelete(params.row.id)} >
+                            <DeleteIcon sx={{ fontSize: '20px' }} />
+                        </IconButton>
+                    </>
+                )
+            }
+        }
     ];
 
-    const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    ];
+    const handleUpdate = (data) => {
+        console.log(data);
+        // setCurrentCategory(data);
+        // setUpdate(true);
+        // setOpen(true);
+    };
+
+    const handleDelete = async (categoryId) => {
+        await dispatch(deleteCategory(categoryId));
+        await dispatch(fetchCategory());
+    }
+
+    const rows = Array.isArray(cateDataFetch?.data) ? cateDataFetch.data.map((category, index) => ({
+        id: category._id || index + 1,
+        category_name: category.category_name,
+        category_desc: category.category_desc,
+        avatar: category.avatar || [],
+        created_at: category.created_at || new Date().toISOString(),
+    })) : [];
 
     const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
 
     return (
         <>
             <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '65px' }}>
-                <h3 className='mb-0' style={{ color: '#FF6337' }}>Add Category</h3>
-                <Button type="button" variant="contained" onClick={handleClickOpen}>Category <AddIcon fontSize="small" /></Button>
+                <h3 className='mb-0' style={{ color: '#FF6337' }}>{update ? 'Update Category' : 'Add Category'}</h3>
+                <Button type="button" variant="contained" onClick={handleClickOpen}>{update ? 'Update Category' : 'Add Category'} <AddIcon fontSize="small" /></Button>
             </div>
-            <Dialog id='addModal' open={open}>
-                <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Category</DialogTitle>
+            <Dialog id='addModal' open={open} onClose={handleClose}>
+                <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>
+                    {update ? 'Update Category' : 'Add Category'}
+                </DialogTitle>
                 <DialogContent className='px-5 pb-4'>
                     <form className='row' onSubmit={handleSubmit} style={{ width: "500px", marginTop: '7px' }}>
+
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="cate_name" label="Category Name" type="text" fullWidth name='cate_name' variant="standard"
+                            <TextField className='m-0' margin="dense" id="category_name" label="Category Name" type="text" fullWidth name='category_name' variant="standard"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.cate_name}
+                                value={values.category_name}
                             />
-                            {errors.cate_name && touched.cate_name ? (
-                                <span className="d-block position-absolute form-error">{errors.cate_name}</span>
+                            {errors.category_name && touched.category_name ? (
+                                <span className="d-block position-absolute form-error">{errors.category_name}</span>
                             ) : null}
                         </div>
+
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="cate_desc" label="Category Description" type="text" fullWidth name='cate_desc' variant="standard"
+                            <TextField className='m-0' margin="dense" id="category_desc" label="Category Description" type="text" fullWidth name='category_desc' variant="standard"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.cate_desc}
+                                value={values.category_desc}
                             />
-                            {errors.cate_desc && touched.cate_desc ? (
-                                <span className="d-block position-absolute form-error">{errors.cate_desc}</span>
+                            {errors.category_desc && touched.category_desc ? (
+                                <span className="d-block position-absolute form-error">{errors.category_desc}</span>
                             ) : null}
                         </div>
-                        <div className="col-6 mb-3 form_field position-relative">
-                            <input type='file' name='file'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.file}
-                            />
-                            {errors.file && touched.file ? (
-                                <span className="d-block position-absolute form-error">{errors.file}</span>
-                            ) : null}
-                        </div>
+
+                        {fileInputs.map((input, index) => (
+                            <div key={index} className="col-6 mb-3 form_field position-relative">
+                                <input type='file' name='avatar'
+                                    onChange={(event) => {
+                                        const files = Array.from(event.currentTarget.files);
+                                        setFieldValue('avatar', [...values.avatar, ...files]);
+                                    }}
+                                    onBlur={handleBlur}
+                                />
+                                {values.avatar[index] && (
+                                    <img
+                                        src={URL.createObjectURL(values.avatar[index])}
+                                        alt={`Preview ${index}`}
+                                        style={{ width: 50, height: 50, marginTop: 10 }}
+                                    />
+                                )}
+                                {errors.avatar && touched.avatar ? (
+                                    <span className="d-block position-absolute form-error">{errors.avatar}</span>
+                                ) : null}
+                            </div>
+                        ))}
+
                         <div className='pt-3 col-12 text-center'>
                             <Button className='me-3' onClick={handleClose}>Cancel</Button>
-                            <Button type="submit" variant="contained">Submit</Button>
+                            <Button type="submit" variant="contained">{update ? 'Update' : 'Submit'}</Button>
                         </div>
+
                     </form>
                 </DialogContent>
             </Dialog>
+
             <div style={{ height: 400, width: '100%', marginTop: '50px' }}>
                 <DataGrid
                     rows={rows}

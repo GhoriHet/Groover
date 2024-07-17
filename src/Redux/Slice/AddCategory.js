@@ -24,9 +24,10 @@ export const postCategory = createAsyncThunk(
 
 export const putCategory = createAsyncThunk(
     "category/putCategory",
-    async ({ id, data }) => {
+    async ({ categoryId, data }) => {
         try {
-            const response = await axios.put(`http://localhost:9001/api/category/update-category/${id}`, data);
+            const response = await axios.put(`http://localhost:9001/api/category/update-category/${categoryId}`, data);
+            console.log(response.data, "30{Slice}")
             return response.data;
         } catch (error) {
             throw error;
@@ -36,11 +37,11 @@ export const putCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
     "category/deleteCategory",
-    async (id) => {
+    async (categoryId) => {
         try {
-           let response = await axios.delete(`http://localhost:9001/api/category/deleteCategory/${id}`);
+           let response = await axios.delete(`http://localhost:9001/api/category/delete-category/${categoryId}`);
 
-            return response.id; 
+            return response.categoryId; 
         } catch (error) {
             throw error;
         }
@@ -88,7 +89,7 @@ const AddCategorySlice = createSlice({
         });
         builder.addCase(putCategory.fulfilled, (state, action) => {
             state.loading = false;
-            state.data = state.data.data.map(item => {
+            state.data = state.data.map(item => {
                 if (item.id === action.payload.id) {
                     return action.payload;
                 }
