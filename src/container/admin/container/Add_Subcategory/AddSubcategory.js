@@ -23,10 +23,7 @@ function AddSubcategory(props) {
     const dispatch = useDispatch();
 
     const subcateoryDataFetch = useSelector((state => state.subcategory?.data));
-    console.log(subcateoryDataFetch, "{19-Subcategory}")
-
     const categoryDataFetch = useSelector((state => state.category?.data));
-    console.log(categoryDataFetch, "{22-Category}")
 
     React.useEffect(() => {
         dispatch(fetchCategory());
@@ -62,8 +59,6 @@ function AddSubcategory(props) {
             values.avatar.forEach(file => {
                 formData.append('avatar', file);
             });
-
-            console.log(formData);
 
             await dispatch(postSubcategory(formData));
 
@@ -123,7 +118,6 @@ function AddSubcategory(props) {
     }
 
     const handleDelete = async (subcategoryId) => {
-        console.log(subcategoryId)
         await dispatch(deleteSubcategory(subcategoryId));
         await dispatch(fetchSubcategory());
     }
@@ -136,8 +130,6 @@ function AddSubcategory(props) {
         avatar: subcategory.avatar || [],
         created_at: subcategory.created_at || new Date().toISOString(),
     })) : [];
-
-    console.log(rows)
 
     const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
 
