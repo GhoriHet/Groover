@@ -13,7 +13,7 @@ import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
 function AddSubcategory(props) {
     const [open, setOpen] = React.useState(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(); 
 
     const subcateoryDataFetch = useSelector((state => state.subcategory?.data?.data));
     console.log(subcateoryDataFetch, "{19-Subcategory}")
