@@ -1,20 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchSubcategory = createAsyncThunk(
-    "category/fetchSubcategory",
+export const fetchProduct = createAsyncThunk(
+    "category/fetchProduct",
     async () => {
-        const response = await fetch("http://localhost:9001/api/subcategory/get-subcategory/");
+        const response = await fetch("http://localhost:9001/api/product/list-product/");
         const data = await response.json();
         return data;
     }
 );
 
-export const postSubcategory = createAsyncThunk(
-    "category/postSubcategory",
+export const postProduct = createAsyncThunk(
+    "category/postProduct",
     async (data) => {
         try {
-            const response = await axios.post("http://localhost:9001/api/subcategory/create-subcategory/", data);
+            const response = await axios.post("http://localhost:9001/api/product/create-product/", data);
             return response.data;
         } catch (error) {
             throw error;
@@ -22,11 +22,11 @@ export const postSubcategory = createAsyncThunk(
     }
 );
 
-export const putSubcategory = createAsyncThunk(
-    "category/putSubcategory",
-    async ({ subcategoryId, data }) => {
+export const putProduct = createAsyncThunk(
+    "category/putProduct",
+    async ({ productId, data }) => {
         try {
-            const response = await axios.put(`http://localhost:9001/api/subcategory/update-subcategory/${subcategoryId}`, data);
+            const response = await axios.put(`http://localhost:9001/api/product/update-product/${productId}`, data);
             console.log(response.data, "30{Slice}")
             return response.data;
         } catch (error) {
@@ -35,21 +35,21 @@ export const putSubcategory = createAsyncThunk(
     }
 );
 
-export const deleteSubcategory = createAsyncThunk(
-    "category/deleteSubcategory",
-    async (subcategoryId) => {
+export const deleteProduct = createAsyncThunk(
+    "category/deleteProduct",
+    async (productId) => {
         try {
-           let response = await axios.delete(`http://localhost:9001/api/subcategory/delete-subcategory/${subcategoryId}`);
+           let response = await axios.delete(`http://localhost:9001/api/product/delete-product/${productId}`);
 
-            return response.subcategoryId; 
+            return response.productId; 
         } catch (error) {
             throw error;
         }
     }
 );
 
-const AddSubcategorySlice = createSlice({
-    name: "subcategory",
+const AddProductSlice = createSlice({
+    name: "product",
     initialState: {
         data: [],
         loading: false,
@@ -57,37 +57,37 @@ const AddSubcategorySlice = createSlice({
     },
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchSubcategory.pending, (state) => {
+        builder.addCase(fetchProduct.pending, (state) => {
             state.loading = true;
             state.error = null;
         });
-        builder.addCase(fetchSubcategory.fulfilled, (state, action) => {
+        builder.addCase(fetchProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.data = action.payload;
         });
-        builder.addCase(fetchSubcategory.rejected, (state, action) => {
+        builder.addCase(fetchProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
 
-        builder.addCase(postSubcategory.pending, (state) => {
+        builder.addCase(postProduct.pending, (state) => {
             state.loading = true;
             state.error = null;
         });
-        builder.addCase(postSubcategory.fulfilled, (state, action) => {
+        builder.addCase(postProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.data = action.payload;
         });
-        builder.addCase(postSubcategory.rejected, (state, action) => {
+        builder.addCase(postProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
 
-        builder.addCase(putSubcategory.pending, (state) => {
+        builder.addCase(putProduct.pending, (state) => {
             state.loading = true;
             state.error = null;
         });
-        builder.addCase(putSubcategory.fulfilled, (state, action) => {
+        builder.addCase(putProduct.fulfilled, (state, action) => {
             state.loading = false;
             state.data = state.data.map(item => {
                 if (item.id === action.payload.id) {
@@ -96,26 +96,26 @@ const AddSubcategorySlice = createSlice({
                 return item;
             });
         });
-        builder.addCase(putSubcategory.rejected, (state, action) => {
+        builder.addCase(putProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
 
-        builder.addCase(deleteSubcategory.pending, (state) => {
+        builder.addCase(deleteProduct.pending, (state) => {
             state.loading = true;
             state.error = null;
         });
-        builder.addCase(deleteSubcategory.fulfilled, (state, action) => {
+        builder.addCase(deleteProduct.fulfilled, (state, action) => {
             state.loading = false;
             if (Array.isArray(state.data)) {
                 state.data = state.data.filter(item => item.id !== action.payload);
             }
         });
-        builder.addCase(deleteSubcategory.rejected, (state, action) => {
+        builder.addCase(deleteProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
     }
 });
 
-export default AddSubcategorySlice.reducer;
+export default AddProductSlice.reducer;
