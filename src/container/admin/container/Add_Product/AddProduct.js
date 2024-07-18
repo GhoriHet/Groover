@@ -1,4 +1,5 @@
 import React from 'react';
+import * as yup from "yup";
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -6,9 +7,28 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
+import { fetchSubcategory } from '../../../../Redux/Slice/AddSubcategorySlice';
+import { fetchProduct, postProduct } from '../../../../Redux/Slice/AddProductSlice';
+import { useFormik } from 'formik';
 
 function AddProduct(props) {
     const [open, setOpen] = React.useState(false);
+    const [category, setCategory] = React.useState('');
+    const [subcategory, setSubcategory] = React.useState([]);
+
+    const dispatch = useDispatch();
+
+    const categoryDataFetch = useSelector((state => state.category?.data));
+    const subcategoryDataFetch = useSelector((state => state.subcategory?.data));
+    const productDataFetch = useSelector((state => state.product?.data));
+
+    React.useEffect(() => {
+        dispatch(fetchCategory());
+        dispatch(fetchSubcategory());
+        dispatch(fetchProduct());
+    }, [dispatch]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -19,6 +39,34 @@ function AddProduct(props) {
         // formik.resetForm()
         // setUpdate(null);
     }
+
+    const ProductValidation = yup.object({
+        category_id: yup.string().required(),
+        subcategory_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
+        subcategory_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
+        avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required('Avatar is required'),
+    });
+
+    const formik = useFormik({
+        initialValues: { category_id: "", subcategory_name: "", subcategory_desc: "", avatar: [] },
+        validationSchema: ProductValidation,
+        onSubmit: async (values) => {
+            const formData = new FormData();
+            formData.append('category_id', values.category_id);
+            formData.append('subcategory_name', values.subcategory_name);
+            formData.append('subcategory_desc', values.subcategory_desc);
+            values.avatar.forEach(file => {
+                formData.append('avatar', file);
+            });
+
+            await dispatch(postProduct(formData));
+
+            await dispatch(fetchProduct());
+            handleClose();
+        }
+    });
+
+    const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
@@ -51,6 +99,15 @@ function AddProduct(props) {
         { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
         { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
     ];
+
+    const handleSub = (value) => {
+        setCategory(value);
+        
+        const finalData = subcategoryDataFetch?.data.filter((v) => v.category_id === value);
+
+        setSubcategory(finalData);
+    }
+
     return (
         <>
             <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '75px' }}>
@@ -61,6 +118,57 @@ function AddProduct(props) {
                 <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Product</DialogTitle>
                 <DialogContent className='px-5 pb-4'>
                     <form className='row' style={{ width: "500px" }}>
+
+                        <div className="col-12 mb-3 form_field position-relative" style={{ marginTop: '25px' }}>
+                            <div className='category_name' style={{ display: 'flex' }}>
+                                <label style={{ paddingRight: '60px', paddingTop: '6px' }}><b>CATEGORY NAME:</b></label>
+                                <select
+                                    name="category_id"
+                                    id="category_id"
+                                    className="form-select"
+                                    onChange={(e) => { handleChange(e); handleSub(e.target.value) }}
+                                    onBlur={handleBlur}
+                                    value={values.category_id}
+                                    style={{ width: '200px', height: '35px', paddingLeft: '10px' }}
+                                >
+
+                                    <option value='0'>-- Select --</option>
+                                    {
+                                        categoryDataFetch.data?.map((value) => {
+                                            return (
+                                                <option key={value._id} value={value._id}>{value.category_name}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="col-12 mb-3 form_field position-relative" style={{ marginTop: '25px' }}>
+                            <div className='category_name' style={{ display: 'flex' }}>
+                                <label style={{ paddingRight: '30px', paddingTop: '6px' }}><b>SUBCATEGORY NAME:</b></label>
+                                <select
+                                    name="subcategory_id"
+                                    id="subcategory_id"
+                                    className="form-select"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.subcategory_id}
+                                    style={{ width: '200px', height: '35px', paddingLeft: '10px' }}
+                                >
+
+                                    <option value='0'>-- Select --</option>
+                                    {
+                                        subcategory.map((value) => {
+                                            return (
+                                                <option key={value._id} value={value._id}>{value.subcategory_name}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
                         <div className="col-12 mb-3 form_field position-relative">
                             <TextField className='m-0' margin="dense" id="mediName" label="Name" type="text" fullWidth name='mediname' variant="standard"
                             // onChange={handleChange}

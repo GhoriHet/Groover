@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchSubcategory = createAsyncThunk(
-    "category/fetchSubcategory",
+    "subcategory/fetchSubcategory",
     async () => {
         const response = await fetch("http://localhost:9001/api/subcategory/get-subcategory/");
         const data = await response.json();
@@ -11,7 +11,7 @@ export const fetchSubcategory = createAsyncThunk(
 );
 
 export const postSubcategory = createAsyncThunk(
-    "category/postSubcategory",
+    "subcategory/postSubcategory",
     async (data) => {
         try {
             const response = await axios.post("http://localhost:9001/api/subcategory/create-subcategory/", data);
@@ -23,7 +23,7 @@ export const postSubcategory = createAsyncThunk(
 );
 
 export const putSubcategory = createAsyncThunk(
-    "category/putSubcategory",
+    "subcategory/putSubcategory",
     async ({ subcategoryId, data }) => {
         try {
             const response = await axios.put(`http://localhost:9001/api/subcategory/update-subcategory/${subcategoryId}`, data);
@@ -36,7 +36,7 @@ export const putSubcategory = createAsyncThunk(
 );
 
 export const deleteSubcategory = createAsyncThunk(
-    "category/deleteSubcategory",
+    "subcategory/deleteSubcategory",
     async (subcategoryId) => {
         try {
            let response = await axios.delete(`http://localhost:9001/api/subcategory/delete-subcategory/${subcategoryId}`);

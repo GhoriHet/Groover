@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchProduct = createAsyncThunk(
-    "category/fetchProduct",
+    "product/fetchProduct",
     async () => {
         const response = await fetch("http://localhost:9001/api/product/list-product/");
         const data = await response.json();
@@ -11,7 +11,7 @@ export const fetchProduct = createAsyncThunk(
 );
 
 export const postProduct = createAsyncThunk(
-    "category/postProduct",
+    "product/postProduct",
     async (data) => {
         try {
             const response = await axios.post("http://localhost:9001/api/product/create-product/", data);
@@ -23,7 +23,7 @@ export const postProduct = createAsyncThunk(
 );
 
 export const putProduct = createAsyncThunk(
-    "category/putProduct",
+    "product/putProduct",
     async ({ productId, data }) => {
         try {
             const response = await axios.put(`http://localhost:9001/api/product/update-product/${productId}`, data);
@@ -36,7 +36,7 @@ export const putProduct = createAsyncThunk(
 );
 
 export const deleteProduct = createAsyncThunk(
-    "category/deleteProduct",
+    "product/deleteProduct",
     async (productId) => {
         try {
            let response = await axios.delete(`http://localhost:9001/api/product/delete-product/${productId}`);
