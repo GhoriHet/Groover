@@ -34,7 +34,7 @@ function AddCategory(props) {
     const handleClose = () => {
         setOpen(false);
         formik.resetForm();
-        setFileInputs([]);
+        setFileInputs([0]);
         setUpdate(false);
     }
 
@@ -157,27 +157,40 @@ function AddCategory(props) {
                             ) : null}
                         </div>
 
-                        {fileInputs.map((input, index) => (
-                            <div key={index} className="col-6 mb-3 form_field position-relative">
-                                <input type='file' name='avatar'
-                                    onChange={(event) => {
-                                        const files = Array.from(event.currentTarget.files);
-                                        setFieldValue('avatar', [...values.avatar, ...files]);
-                                    }}
-                                    onBlur={handleBlur}
-                                />
-                                {values.avatar[index] && (
-                                    <img
-                                        src={URL.createObjectURL(values.avatar[index])}
-                                        alt={`Preview ${index}`}
-                                        style={{ width: 50, height: 50, marginTop: 10 }}
+                        <div className='addProduct'>
+                            {fileInputs.map((input, index) => (
+                                <div key={input}>
+                                    <input 
+                                        type='file' 
+                                        name='avatar' 
+                                        id={`fileInput${input}`} 
+                                        onChange={(event) => {
+                                            const files = Array.from(event.currentTarget.files);
+                                            const newAvatarArray = [...values.avatar];
+                                            newAvatarArray[index] = files[0]; 
+                                            setFieldValue('avatar', newAvatarArray);
+                                        }} 
+                                        style={{ display: 'none' }} 
                                     />
-                                )}
-                                {errors.avatar && touched.avatar ? (
-                                    <span className="d-block position-absolute form-error">{errors.avatar}</span>
-                                ) : null}
-                            </div>
-                        ))}
+                                    <label htmlFor={`fileInput${input}`} className="file-input-label">
+                                        {values.avatar[index] ? 'Change Image' : 'Choose Image'}
+                                    </label>
+
+                                    {values.avatar[index] && (
+                                        <div className="img-container" style={{ margin: '0 11px' }}>
+                                            <img
+                                                src={URL.createObjectURL(values.avatar[index])}
+                                                id='selected-image'
+                                                alt={`Preview ${index}`}
+                                            />
+                                        </div>
+                                    )}
+                                    {errors.avatar && touched.avatar ? (
+                                        <span className="d-block position-absolute form-error">{errors.avatar}</span>
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
 
                         <div className='pt-3 col-12 text-center'>
                             <Button className='me-3' onClick={handleClose}>Cancel</Button>
