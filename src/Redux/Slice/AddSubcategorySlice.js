@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchSubcategory = createAsyncThunk(
     "category/fetchSubcategory",
     async () => {
-        const response = await fetch("http://localhost:9001/api/category/list-category/");
+        const response = await fetch("http://localhost:9001/api/subcategory/get-subcategory/");
         const data = await response.json();
         return data;
     }
@@ -14,7 +14,7 @@ export const postSubcategory = createAsyncThunk(
     "category/postSubcategory",
     async (data) => {
         try {
-            const response = await axios.post("http://localhost:9001/api/category/create-category/", data);
+            const response = await axios.post("http://localhost:9001/api/subcategory/create-subcategory/", data);
             return response.data;
         } catch (error) {
             throw error;
@@ -26,7 +26,7 @@ export const putSubcategory = createAsyncThunk(
     "category/putSubcategory",
     async ({ categoryId, data }) => {
         try {
-            const response = await axios.put(`http://localhost:9001/api/category/update-category/${categoryId}`, data);
+            const response = await axios.put(`http://localhost:9001/api/subcategory/update-subcategory/${categoryId}`, data);
             console.log(response.data, "30{Slice}")
             return response.data;
         } catch (error) {
@@ -39,7 +39,7 @@ export const deleteSubcategory = createAsyncThunk(
     "category/deleteSubcategory",
     async (categoryId) => {
         try {
-           let response = await axios.delete(`http://localhost:9001/api/category/delete-category/${categoryId}`);
+           let response = await axios.delete(`http://localhost:9001/api/subcategory/delete-category/${categoryId}`);
 
             return response.categoryId; 
         } catch (error) {

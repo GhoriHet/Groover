@@ -6,12 +6,25 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSubcategory } from '../../../../Redux/Slice/AddSubcategorySlice';
+import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
 
 function AddSubcategory(props) {
     const [open, setOpen] = React.useState(false);
 
     const dispatch = useDispatch();
+
+    const subcateoryDataFetch = useSelector((state => state.subcategory?.data?.data));
+    console.log(subcateoryDataFetch, "{19-Subcategory}")
+
+    const categoryDataFetch = useSelector((state => state.category?.data?.data));
+    console.log(categoryDataFetch, "{22-Category}")
+
+    React.useEffect(() => {
+        dispatch(fetchCategory());
+        dispatch(fetchSubcategory());
+    }, [dispatch]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -64,7 +77,7 @@ function AddSubcategory(props) {
                 <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Subcategory</DialogTitle>
                 <DialogContent className='px-5 pb-4'>
                     <form className='row' style={{ width: "500px" }}>
-                        <div className="col-12 mb-3 form_field position-relative">
+                        <div className="col-6 mb-3 form_field position-relative">
                             <TextField className='m-0' margin="dense" id="mediName" label="Name" type="text" fullWidth name='mediname' variant="standard"
                             // onChange={handleChange}
                             // onBlur={handleBlur}
@@ -75,27 +88,7 @@ function AddSubcategory(props) {
                             ) : null} */}
                         </div>
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediPrice" label="Price" type="text" fullWidth name='mediprice' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediprice}
-                            />
-                            {/* {errors.mediprice && touched.mediprice ? (
-                                <span className="d-block position-absolute form-error">{errors.mediprice}</span>
-                            ) : null} */}
-                        </div>
-                        <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediExpiryDate" label=" " type="date" name='mediexpiry' fullWidth variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediexpiry}
-                            />
-                            {/* {errors.mediexpiry && touched.mediexpiry ? (
-                                <span className="d-block position-absolute form-error">{errors.mediexpiry}</span>
-                            ) : null} */}
-                        </div>
-                        <div className="col-12 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediDesc" label="Description" type="text" fullWidth multiline rows={3} name='medidesc' variant="standard"
+                            <TextField className='m-0' margin="dense" id="mediDesc" label="Description" type="text" fullWidth name='medidesc' variant="standard"
                             // onChange={handleChange}
                             // onBlur={handleBlur}
                             // value={values.medidesc}
