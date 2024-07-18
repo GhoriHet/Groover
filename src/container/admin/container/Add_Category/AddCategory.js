@@ -124,7 +124,7 @@ function AddCategory(props) {
 
     return (
         <>
-            <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '65px' }}>
+            <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '75px' }}>
                 <h3 className='mb-0' style={{ color: '#FF6337' }}>{update ? 'Update Category' : 'Add Category'}</h3>
                 <Button type="button" variant="contained" onClick={handleClickOpen}>{update ? 'Update Category' : 'Add Category'} <AddIcon fontSize="small" /></Button>
             </div>

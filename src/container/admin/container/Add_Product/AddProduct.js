@@ -53,9 +53,9 @@ function AddProduct(props) {
     ];
     return (
         <>
-            <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '65px' }}>
+            <div className='d-flex align-items-center justify-content-between' style={{ marginTop: '75px' }}>
                 <h3 className='mb-0' style={{ color: '#FF6337' }}>Add Product</h3>
-                <Button type="button" variant="contained" onClick={handleClickOpen}>Product <AddIcon fontSize="small" /></Button>
+                <Button type="button" variant="contained" onClick={handleClickOpen}>Add Product <AddIcon fontSize="small" /></Button>
             </div>
             <Dialog id='addModal' open={open}>
                 <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Product</DialogTitle>
