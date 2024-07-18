@@ -68,7 +68,7 @@ function AddCategory(props) {
     }, [formik.values.avatar, fileInputs]);
 
     const columns = [
-        { field: 'id', headerName: 'Product ID', width: 290 },
+        { field: 'id', headerName: 'Category ID', width: 290 },
         { field: 'category_name', headerName: 'Category Name', width: 150 },
         { field: 'category_desc', headerName: 'Category Description', width: 200 },
         {
