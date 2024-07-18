@@ -6,9 +6,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
+import { useDispatch } from 'react-redux';
 
 function AddSubcategory(props) {
     const [open, setOpen] = React.useState(false);
+
+    const dispatch = useDispatch();
 
     const handleClickOpen = () => {
         setOpen(true);
