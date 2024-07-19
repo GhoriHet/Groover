@@ -15,8 +15,10 @@ import { useFormik } from 'formik';
 
 function AddProduct(props) {
     const [open, setOpen] = React.useState(false);
+    const [fileInputs, setFileInputs] = React.useState([0]);
     const [category, setCategory] = React.useState('');
     const [subcategory, setSubcategory] = React.useState([]);
+    const [update, setUpdate] = React.useState(false);
 
     const dispatch = useDispatch();
 
@@ -36,25 +38,43 @@ function AddProduct(props) {
 
     const handleClose = () => {
         setOpen(false)
-        // formik.resetForm()
+        formik.resetForm();
+        setFileInputs([0]);
         // setUpdate(null);
     }
 
     const ProductValidation = yup.object({
         category_id: yup.string().required(),
-        subcategory_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
-        subcategory_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
+        subcategory_id: yup.string().required(),
+        sku: yup.number().required(),
+        name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required(),
+        description: yup.string().min(2, 'Description must be at least 2 characters').required(),
+        color: yup.string().required(),
+        size: yup.string().required(),
+        stock: yup.number().required(),
+        weight: yup.number().required(),
+        mrp: yup.number().required(),
+        price: yup.number().required(),
         avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required('Avatar is required'),
     });
 
     const formik = useFormik({
-        initialValues: { category_id: "", subcategory_name: "", subcategory_desc: "", avatar: [] },
+        initialValues: { category_id: "", subcategory_id: "", sku: "", name: "", description: "", color: "", size: "", stock: "", weight: "", mrp: "", price: "", avatar: [] },
         validationSchema: ProductValidation,
         onSubmit: async (values) => {
+            console.log(values, "{56-ProductMain}")
             const formData = new FormData();
             formData.append('category_id', values.category_id);
-            formData.append('subcategory_name', values.subcategory_name);
-            formData.append('subcategory_desc', values.subcategory_desc);
+            formData.append('subcategory_id', values.subcategory_id);
+            formData.append('sku', values.sku);
+            formData.append('name', values.name);
+            formData.append('description', values.description);
+            formData.append('color', values.color);
+            formData.append('size', values.size);
+            formData.append('stock', values.stock);
+            formData.append('weight', values.weight);
+            formData.append('mrp', values.mrp);
+            formData.append('price', values.price);
             values.avatar.forEach(file => {
                 formData.append('avatar', file);
             });
@@ -65,8 +85,6 @@ function AddProduct(props) {
             handleClose();
         }
     });
-
-    const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
@@ -100,13 +118,21 @@ function AddProduct(props) {
         { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
     ];
 
+    React.useEffect(() => {
+        if (!update && formik.values.avatar.length > 0 && fileInputs.length === formik.values.avatar.length) {
+            setFileInputs([...fileInputs, fileInputs.length]);
+        }
+    }, [formik.values.avatar, fileInputs]);
+
     const handleSub = (value) => {
         setCategory(value);
-        
+
         const finalData = subcategoryDataFetch?.data.filter((v) => v.category_id === value);
 
         setSubcategory(finalData);
     }
+
+    const { handleBlur, handleChange, handleSubmit, touched, errors, values, setFieldValue } = formik;
 
     return (
         <>
@@ -117,7 +143,7 @@ function AddProduct(props) {
             <Dialog id='addModal' open={open}>
                 <DialogTitle style={{ fontSize: '24px', fontWeight: 'bold', color: '#707070', fontFamily: 'Poppins' }} className='px-5 pt-4 pb-0 text-center'>Add Product</DialogTitle>
                 <DialogContent className='px-5 pb-4'>
-                    <form className='row' style={{ width: "500px" }}>
+                    <form className='row' onSubmit={handleSubmit} style={{ width: "500px" }}>
 
                         <div className="col-12 mb-3 form_field position-relative" style={{ marginTop: '25px' }}>
                             <div className='category_name' style={{ display: 'flex' }}>
@@ -169,46 +195,140 @@ function AddProduct(props) {
                             </div>
                         </div>
 
-                        <div className="col-12 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediName" label="Name" type="text" fullWidth name='mediname' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediname}
-                            />
-                            {/* {errors.mediname && touched.mediname ? (
-                                <span className="d-block position-absolute form-error">{errors.mediname}</span>
-                            ) : null} */}
-                        </div>
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediPrice" label="Price" type="text" fullWidth name='mediprice' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediprice}
+                            <TextField className='m-0' margin="dense" id="name" label="Name" type="text" fullWidth name='name' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
                             />
-                            {/* {errors.mediprice && touched.mediprice ? (
-                                <span className="d-block position-absolute form-error">{errors.mediprice}</span>
-                            ) : null} */}
+                            {errors.name && touched.name ? (
+                                <span className="d-block position-absolute form-error">{errors.name}</span>
+                            ) : null}
                         </div>
+
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediExpiryDate" label=" " type="date" name='mediexpiry' fullWidth variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.mediexpiry}
+                            <TextField className='m-0' margin="dense" id="sku" label="SKU" type="number" fullWidth name='sku' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.sku}
                             />
-                            {/* {errors.mediexpiry && touched.mediexpiry ? (
-                                <span className="d-block position-absolute form-error">{errors.mediexpiry}</span>
-                            ) : null} */}
+                            {errors.sku && touched.sku ? (
+                                <span className="d-block position-absolute form-error">{errors.sku}</span>
+                            ) : null}
                         </div>
+
                         <div className="col-12 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="mediDesc" label="Description" type="text" fullWidth multiline rows={3} name='medidesc' variant="standard"
-                            // onChange={handleChange}
-                            // onBlur={handleBlur}
-                            // value={values.medidesc}
+                            <TextField className='m-0' margin="dense" id="description" label="Description" type="text" fullWidth multiline rows={3} name='description' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.description}
                             />
-                            {/* {errors.medidesc && touched.medidesc ? (
-                                <span className="d-block position-absolute form-error">{errors.medidesc}</span>
-                            ) : null} */}
+                            {errors.description && touched.description ? (
+                                <span className="d-block position-absolute form-error">{errors.description}</span>
+                            ) : null}
                         </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="color" label="Color" type="text" fullWidth name='color' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.color}
+                            />
+                            {errors.color && touched.color ? (
+                                <span className="d-block position-absolute form-error">{errors.color}</span>
+                            ) : null}
+                        </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="size" label="Size" type="text" fullWidth name='size' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.size}
+                            />
+                            {errors.size && touched.size ? (
+                                <span className="d-block position-absolute form-error">{errors.size}</span>
+                            ) : null}
+                        </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="stock" label="Stock" type="number" fullWidth name='stock' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.stock}
+                            />
+                            {errors.stock && touched.stock ? (
+                                <span className="d-block position-absolute form-error">{errors.stock}</span>
+                            ) : null}
+                        </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="weight" label="Weight" type="number" fullWidth name='weight' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.weight}
+                            />
+                            {errors.weight && touched.weight ? (
+                                <span className="d-block position-absolute form-error">{errors.weight}</span>
+                            ) : null}
+                        </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="mrp" label="MRP" type="number" fullWidth name='mrp' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.mrp}
+                            />
+                            {errors.mrp && touched.mrp ? (
+                                <span className="d-block position-absolute form-error">{errors.mrp}</span>
+                            ) : null}
+                        </div>
+
+                        <div className="col-6 mb-3 form_field position-relative">
+                            <TextField className='m-0' margin="dense" id="price" label="Price" type="number" fullWidth name='price' variant="standard"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.price}
+                            />
+                            {errors.price && touched.price ? (
+                                <span className="d-block position-absolute form-error">{errors.price}</span>
+                            ) : null}
+                        </div>
+
+                        <div className='addProduct' style={{paddingLeft: 65}}>
+                            {fileInputs.map((input, index) => (
+                                <div key={input}>
+                                    <input
+                                        type='file'
+                                        name='avatar'
+                                        id={`fileInput${input}`}
+                                        onChange={(event) => {
+                                            const files = Array.from(event.currentTarget.files);
+                                            const newAvatarArray = [...values.avatar];
+                                            newAvatarArray[index] = files[0];
+                                            setFieldValue('avatar', newAvatarArray);
+                                        }}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <label htmlFor={`fileInput${input}`} className="file-input-label">
+                                        {values.avatar[index] ? 'Change Image' : 'Choose Image'}
+                                    </label>
+
+                                    {values.avatar[index] && (
+                                        <div className="img-container" style={{ margin: '0 11px' }}>
+                                            <img
+                                                src={URL.createObjectURL(values.avatar[index])}
+                                                id='selected-image'
+                                                alt={`Preview ${index}`}
+                                            />
+                                        </div>
+                                    )}
+                                    {errors.avatar && touched.avatar ? (
+                                        <span className="d-block position-absolute form-error">{errors.avatar}</span>
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
+
                         <div className='pt-3 col-12 text-center'>
                             <Button className='me-3' onClick={handleClose}>Cancel</Button>
                             <Button type="submit" variant="contained">Submit</Button>
