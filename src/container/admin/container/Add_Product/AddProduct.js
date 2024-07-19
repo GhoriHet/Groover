@@ -7,10 +7,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
 import { fetchSubcategory } from '../../../../Redux/Slice/AddSubcategorySlice';
-import { fetchProduct, postProduct } from '../../../../Redux/Slice/AddProductSlice';
+import { deleteProduct, fetchProduct, postProduct } from '../../../../Redux/Slice/AddProductSlice';
 import { useFormik } from 'formik';
 
 function AddProduct(props) {
@@ -104,12 +107,36 @@ function AddProduct(props) {
         },
         { field: 'name', headerName: 'PName', width: 130 },
         { field: 'description', headerName: 'PDesc', width: 130 },
-        { field: 'stock', headerName: 'Stock', width: 90 },
-        { field: 'size', headerName: 'Size', width: 90 },
+        { field: 'stock', headerName: 'Stock', width: 100 },
+        { field: 'size', headerName: 'Size', width: 190 },
+        {
+            field: "action", headerName: "Action", flex: 1, sortable: false, disableColumnMenu: true,
+            renderCell: (params) => {
+                return (
+                    <>
+                        <IconButton aria-label="edit" type='button' onClick={() => handleUpdate(params.row)} >
+                            <EditIcon sx={{ fontSize: '20px' }} />
+                        </IconButton>
+                        <IconButton aria-label="delete" type='button' onClick={() => handleDelete(params.row.id)} >
+                            <DeleteIcon sx={{ fontSize: '20px' }} />
+                        </IconButton>
+                    </>
+                )
+            }
+        }
     ];
 
+    const handleUpdate = async (data) => {
+        console.log(data)
+    }
+
+    const handleDelete = async (productId) => {
+        await dispatch(deleteProduct(productId));
+        await dispatch(fetchProduct());
+    }
+
     const rows = Array.isArray(productDataFetch?.data) ? productDataFetch.data.map((product, index) => ({
-        id: index + 1,
+        id: product._id || index + 1,
         category_id: product.category_id,
         subcategory_id: product.subcategory_id,
         name: product.name,
