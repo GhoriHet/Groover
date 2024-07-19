@@ -88,28 +88,30 @@ function AddProduct(props) {
 
     const columns = [
         { field: 'id', headerName: 'No', width: 70 },
-        { field: 'firstName', headerName: 'PName', width: 130 },
-        { field: 'lastName', headerName: 'PDesc', width: 130 },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
-            width: 90,
+            field: 'category_id', headerName: 'CName', width: 130,
+            renderCell: (params) => {
+                const fData = categoryDataFetch.data.filter((v) => v._id === params.row.category_id);
+                return fData.length > 0 ? fData[0].category_name : null;
+            }
         },
         {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 160,
-            valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+            field: 'subcategory_id', headerName: 'SName', width: 130,
+            renderCell: (params) => {
+                const fData = subcategoryDataFetch.data.filter((v) => v._id === params.row.subcategory_id);
+                return fData.length > 0 ? fData[0].subcategory_name : null;
+            }
         },
+        { field: 'name', headerName: 'PName', width: 130 },
+        { field: 'description', headerName: 'PDesc', width: 130 },
+        { field: 'stock', headerName: 'Stock', width: 90 },
+        { field: 'size', headerName: 'Size', width: 90 },
     ];
 
     const rows = Array.isArray(productDataFetch?.data) ? productDataFetch.data.map((product, index) => ({
         id: index + 1,
         category_id: product.category_id,
-        subcategory_id: product.category_id,
+        subcategory_id: product.subcategory_id,
         name: product.name,
         description: product.description,
         sku: product.sku,
@@ -299,7 +301,7 @@ function AddProduct(props) {
                             ) : null}
                         </div>
 
-                        <div className='addProduct' style={{paddingLeft: 65}}>
+                        <div className='addProduct' style={{ paddingLeft: 65 }}>
                             {fileInputs.map((input, index) => (
                                 <div key={input}>
                                     <input

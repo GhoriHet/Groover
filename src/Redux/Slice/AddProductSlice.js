@@ -28,7 +28,6 @@ export const putProduct = createAsyncThunk(
     async ({ productId, data }) => {
         try {
             const response = await axios.put(`http://localhost:9001/api/product/update-product/${productId}`, data);
-            console.log(response.data, "30{Slice}")
             return response.data;
         } catch (error) {
             throw error;
