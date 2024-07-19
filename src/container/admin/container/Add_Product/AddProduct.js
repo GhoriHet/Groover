@@ -87,9 +87,9 @@ function AddProduct(props) {
     });
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First name', width: 130 },
-        { field: 'lastName', headerName: 'Last name', width: 130 },
+        { field: 'id', headerName: 'No', width: 70 },
+        { field: 'firstName', headerName: 'PName', width: 130 },
+        { field: 'lastName', headerName: 'PDesc', width: 130 },
         {
             field: 'age',
             headerName: 'Age',
@@ -107,7 +107,7 @@ function AddProduct(props) {
     ];
 
     const rows = Array.isArray(productDataFetch?.data) ? productDataFetch.data.map((product, index) => ({
-        id: product._id || index + 1,
+        id: index + 1,
         category_id: product.category_id,
         subcategory_id: product.category_id,
         name: product.name,
