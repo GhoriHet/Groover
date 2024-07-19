@@ -15,6 +15,7 @@ export const postProduct = createAsyncThunk(
     async (data) => {
         try {
             const response = await axios.post("http://localhost:9001/api/product/create-product/", data);
+            console.log(response.data, "{SLice}")
             return response.data;
         } catch (error) {
             throw error;

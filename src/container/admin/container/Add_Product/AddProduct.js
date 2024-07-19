@@ -55,7 +55,7 @@ function AddProduct(props) {
         weight: yup.number().required(),
         mrp: yup.number().required(),
         price: yup.number().required(),
-        avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required('Avatar is required'),
+        avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required(),
     });
 
     const formik = useFormik({
@@ -106,17 +106,22 @@ function AddProduct(props) {
         },
     ];
 
-    const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    ];
+    const rows = Array.isArray(productDataFetch?.data) ? productDataFetch.data.map((product, index) => ({
+        id: product._id || index + 1,
+        category_id: product.category_id,
+        subcategory_id: product.category_id,
+        name: product.name,
+        description: product.description,
+        sku: product.sku,
+        color: product.color,
+        size: product.size,
+        stock: product.stock,
+        weight: product.weight,
+        mrp: product.mrp,
+        price: product.price,
+        avatar: product.avatar || [],
+        created_at: product.created_at || new Date().toISOString(),
+    })) : [];
 
     React.useEffect(() => {
         if (!update && formik.values.avatar.length > 0 && fileInputs.length === formik.values.avatar.length) {
