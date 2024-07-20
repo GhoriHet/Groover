@@ -1,7 +1,34 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { fetchCategory } from '../../Redux/Slice/AddCategory';
+import { setSelectedCategory } from '../../Redux/Slice/SelectCategory';
 
 function Header(props) {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const catDataFetched = useSelector((state => state.category?.data));
+    const selectedCategory = useSelector(state => state.selectcategory.selectedCategory);
+
+    React.useEffect(async () => {
+        await dispatch(fetchCategory());
+    }, [location.pathname]);
+
+    const handleCategoryChange = (event) => {
+        const selectedCategory = event.target.value;
+        console.log(selectedCategory);
+    
+        dispatch(setSelectedCategory(selectedCategory))
+    
+        if (selectedCategory) {
+          navigate(`/category/${selectedCategory}`);
+        }
+    
+      };
+
     return (
         <header>
             {/* Top-Header */}
@@ -97,26 +124,21 @@ function Header(props) {
                                 <div className="select-box-position">
                                     <div className="select-box-wrapper select-hide">
                                         <label className="sr-only" htmlFor="select-category">Choose category for search</label>
-                                        <select className="select-box" id="select-category">
+
+                                        <select className="select-box" id="select-category" value={selectedCategory} onChange={handleCategoryChange}>
                                             <option selected="selected" value>
                                                 All
                                             </option>
-                                            <option value>Men's Clothing</option>
-                                            <option value>Women's Clothing
-                                            </option>
-                                            <option value>Toys Hobbies &amp; Robots
-                                            </option>
-                                            <option value>Mobiles &amp; Tablets
-                                            </option>
-                                            <option value>Consumer Electronics
-                                            </option>
-                                            <option value>Books &amp; Audible
-                                            </option>
-                                            <option value>Beauty &amp; Health
-                                            </option>
-                                            <option value>Furniture Home &amp; Office
-                                            </option>
+
+                                            {
+                                                catDataFetched?.data?.map((value) => {
+                                                    return (
+                                                        <option value={value.category_name} key={value.category_name}>{value.category_name}</option>
+                                                    )
+                                                })
+                                            }
                                         </select>
+
                                     </div>
                                 </div>
                                 <button id="btn-search" type="submit" className="button button-primary fas fa-search" />

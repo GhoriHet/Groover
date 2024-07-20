@@ -22,6 +22,7 @@ import LostPass from '../container/user/LostPass';
 import Confirmation from '../container/user/Confirmation';
 import CustomDeal from '../container/user/CustomDeal';
 import ShopDetail from '../container/user/ShopDetail';
+import Shop from '../container/user/Shop';
 
 function UserRoutes(props) {
     return (
@@ -32,6 +33,7 @@ function UserRoutes(props) {
 
                 <Route path='/' element={<Home />} />
                 <Route path='/detail' element={<ShopDetail />} />
+                <Route path='/category' element={<Shop />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/faq' element={<Faq />} />
