@@ -159,9 +159,9 @@ function Shop(props) {
 
                                         if (selectedCategory === 'All') {
                                             return (
-                                                <div className="product-item col-lg-4 col-md-6 col-sm-6" key={v.id}>
+                                                <div className="product-item col-lg-4 col-md-6 col-sm-6" key={v._id}>
 
-                                                    <Link to={"/product_Details/" + v.id} >
+                                                    <Link to={"/productDetail/" + v._id} >
                                                         <div className="item">
                                                             <div className="image-container">
 
@@ -216,9 +216,9 @@ function Shop(props) {
                                             )
                                         } else if (categoryName === selectedCategory) {
                                             return (
-                                                <div className="product-item col-lg-4 col-md-6 col-sm-6" key={v.id}>
+                                                <div className="product-item col-lg-4 col-md-6 col-sm-6" key={v._id}>
 
-                                                    <Link to={"/product_Details/" + v.id} >
+                                                    <Link to={"/productDetail/" + v._id} >
                                                         <div className="item">
                                                             <div className="image-container">
 

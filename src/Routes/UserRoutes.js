@@ -32,7 +32,7 @@ function UserRoutes(props) {
             <Routes>
 
                 <Route path='/' element={<Home />} />
-                <Route path='/detail' element={<ShopDetail />} />
+                <Route path='/productDetail/:_id' element={<ShopDetail />} />
                 <Route path='/category/:categoryName' element={<Shop />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />

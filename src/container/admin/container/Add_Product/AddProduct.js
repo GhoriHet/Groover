@@ -53,7 +53,7 @@ function AddProduct(props) {
         name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required(),
         description: yup.string().min(2, 'Description must be at least 2 characters').required(),
         color: yup.string().required(),
-        size: yup.string().required(),
+        size: yup.number().required(),
         stock: yup.number().required(),
         weight: yup.number().required(),
         mrp: yup.number().required(),
@@ -274,7 +274,7 @@ function AddProduct(props) {
                         </div>
 
                         <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="size" label="Size" type="text" fullWidth name='size' variant="standard"
+                            <TextField className='m-0' margin="dense" id="size" label="Size" type="number" fullWidth name='size' variant="standard"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.size}
