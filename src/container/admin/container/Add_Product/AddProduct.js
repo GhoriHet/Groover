@@ -50,7 +50,7 @@ function AddProduct(props) {
         category_id: yup.string().required(),
         subcategory_id: yup.string().required(),
         sku: yup.number().required(),
-        name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required(),
+        name: yup.string().min(2, 'Name must be at least 2 characters').required(),
         description: yup.string().min(2, 'Description must be at least 2 characters').required(),
         color: yup.string().required(),
         size: yup.number().required(),
