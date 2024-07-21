@@ -33,9 +33,6 @@ function Home(props) {
             {/* Banner-Layer */}
             <div className="banner-layer">
                 <div className="container">
-                    <a href="shop-v1-root-category.html" className="mx-auto banner-hover effect-dark-opacity">
-                        <img className="img-fluid" src="images/banners/bannerlayer-1.jpg" alt="Winter Season Banner" />
-                    </a>
                 </div>
             </div>
             {/* Banner-Layer /- */}
