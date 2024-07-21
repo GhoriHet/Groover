@@ -125,7 +125,7 @@ function Header(props) {
                                     <div className="select-box-wrapper select-hide">
                                         <label className="sr-only" htmlFor="select-category">Choose category for search</label>
 
-                                        <select className="select-box" id="select-category" value={selectedCategory} onChange={handleCategoryChange}>
+                                        <select className="select-box" id="select-categoryy" value={selectedCategory} onChange={handleCategoryChange}>
                                             <option value='All'>
                                                 All
                                             </option>
