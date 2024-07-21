@@ -15,7 +15,7 @@ function Header(props) {
 
     React.useEffect(async () => {
         await dispatch(fetchCategory());
-    }, [location.pathname]);
+    }, []);
 
     const handleCategoryChange = (event) => {
         const selectedCategory = event.target.value;
@@ -126,7 +126,7 @@ function Header(props) {
                                         <label className="sr-only" htmlFor="select-category">Choose category for search</label>
 
                                         <select className="select-box" id="select-category" value={selectedCategory} onChange={handleCategoryChange}>
-                                            <option selected="selected" value>
+                                            <option value='All'>
                                                 All
                                             </option>
 

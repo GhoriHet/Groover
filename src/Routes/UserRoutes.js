@@ -33,7 +33,7 @@ function UserRoutes(props) {
 
                 <Route path='/' element={<Home />} />
                 <Route path='/detail' element={<ShopDetail />} />
-                <Route path='/category' element={<Shop />} />
+                <Route path='/category/:categoryName' element={<Shop />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/faq' element={<Faq />} />
