@@ -28,7 +28,8 @@ function Shop(props) {
     };
 
     const uniqueProducts = proDataFetched?.data?.reduce((accumulator, currentProduct) => {
-        if ((selectedSubcategory === 'All' || currentProduct.subcatDataFetched.data === selectedSubcategory)) {
+        const subcategoryName = getSubcategoryNameById(currentProduct.subcategory_id);
+        if (selectedSubcategory === 'All' || subcategoryName === selectedSubcategory) {
             accumulator.push(currentProduct);
         }
         return accumulator;
