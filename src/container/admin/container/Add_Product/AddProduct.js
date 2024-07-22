@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import IconButton from '@mui/material/IconButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../../../../Redux/Slice/AddCategory';
@@ -22,6 +23,7 @@ function AddProduct(props) {
     const [category, setCategory] = React.useState('');
     const [subcategory, setSubcategory] = React.useState([]);
     const [update, setUpdate] = React.useState(false);
+    const [sizesAndStocks, setSizesAndStocks] = React.useState([{ size: null, stock: null }])
 
     const dispatch = useDispatch();
 
@@ -43,9 +45,14 @@ function AddProduct(props) {
         setOpen(false)
         formik.resetForm();
         setFileInputs([0]);
-        // setUpdate(null);
     }
-
+    const handleAddSizeAndStock = () => {
+        setSizesAndStocks(prevState => [
+            ...prevState,
+            { size: '', stock: '' }
+        ]);
+        formik.setFieldValue('sizesAndStocks', [...sizesAndStocks, { size: '', stock: '' }]);
+    }
     const ProductValidation = yup.object({
         category_id: yup.string().required(),
         subcategory_id: yup.string().required(),
@@ -53,8 +60,6 @@ function AddProduct(props) {
         name: yup.string().min(2, 'Name must be at least 2 characters').required(),
         description: yup.string().min(2, 'Description must be at least 2 characters').required(),
         color: yup.string().required(),
-        size: yup.string().required(),
-        stock: yup.number().required(),
         weight: yup.number().required(),
         mrp: yup.number().required(),
         price: yup.number().required(),
@@ -62,24 +67,28 @@ function AddProduct(props) {
     });
 
     const formik = useFormik({
-        initialValues: { category_id: "", subcategory_id: "", sku: "", name: "", description: "", color: "", size: "", stock: "", weight: "", mrp: "", price: "", avatar: [] },
+        initialValues: { category_id: "", subcategory_id: "", sku: "", name: "", description: "", color: "", weight: "", mrp: "", price: "", avatar: [], sizesAndStocks: [{ size: '', stock: '' }] },
         validationSchema: ProductValidation,
         onSubmit: async (values) => {
-            console.log(values, "{56-ProductMain}")
             const formData = new FormData();
+
             formData.append('category_id', values.category_id);
             formData.append('subcategory_id', values.subcategory_id);
             formData.append('sku', values.sku);
             formData.append('name', values.name);
             formData.append('description', values.description);
             formData.append('color', values.color);
-            formData.append('size', values.size);
-            formData.append('stock', values.stock);
             formData.append('weight', values.weight);
             formData.append('mrp', values.mrp);
             formData.append('price', values.price);
             values.avatar.forEach(file => {
                 formData.append('avatar', file);
+            });
+
+            const sizesAndStocks = values.sizesAndStocks || [];
+            sizesAndStocks.forEach((value, index) => {
+                formData.append(`sizesAndStocks[${index}][size]`, value.size);
+                formData.append(`sizesAndStocks[${index}][stock]`, value.stock);
             });
 
             await dispatch(postProduct(formData));
@@ -89,26 +98,47 @@ function AddProduct(props) {
         }
     });
 
+    const handleSizeChange = (e, index) => {
+        const updatedSizesAndStocks = [...sizesAndStocks];
+        updatedSizesAndStocks[index] = {
+            ...updatedSizesAndStocks[index],
+            size: e.target.value
+        };
+        setSizesAndStocks(updatedSizesAndStocks);
+        formik.setFieldValue(`sizesAndStocks[${index}].size`, e.target.value);
+    };
+
+    const handleStockChange = (e, index) => {
+        const stockValue = parseInt(e.target.value);
+        if (!isNaN(stockValue) && stockValue >= 0) {
+            const updatedSizesAndStocks = [...sizesAndStocks];
+            updatedSizesAndStocks[index] = {
+                ...updatedSizesAndStocks[index],
+                stock: stockValue
+            };
+            setSizesAndStocks(updatedSizesAndStocks);
+            formik.setFieldValue(`sizesAndStocks[${index}].stock`, stockValue);
+        }
+    };
+
     const columns = [
-        { field: 'id', headerName: 'No', width: 70 },
+        { field: 'id', headerName: 'ID', width: 100 },
         {
-            field: 'category_id', headerName: 'CName', width: 130,
+            field: 'category_id', headerName: 'CName', width: 180,
             renderCell: (params) => {
                 const fData = categoryDataFetch.data.filter((v) => v._id === params.row.category_id);
                 return fData.length > 0 ? fData[0].category_name : null;
             }
         },
         {
-            field: 'subcategory_id', headerName: 'SName', width: 130,
+            field: 'subcategory_id', headerName: 'SName', width: 150,
             renderCell: (params) => {
                 const fData = subcategoryDataFetch.data.filter((v) => v._id === params.row.subcategory_id);
                 return fData.length > 0 ? fData[0].subcategory_name : null;
             }
         },
-        { field: 'name', headerName: 'PName', width: 130 },
-        { field: 'description', headerName: 'PDesc', width: 130 },
-        { field: 'stock', headerName: 'Stock', width: 100 },
-        { field: 'size', headerName: 'Size', width: 190 },
+        { field: 'name', headerName: 'PName', width: 180 },
+        { field: 'description', headerName: 'PDesc', width: 300 },
         {
             field: "action", headerName: "Action", flex: 1, sortable: false, disableColumnMenu: true,
             renderCell: (params) => {
@@ -143,8 +173,6 @@ function AddProduct(props) {
         description: product.description,
         sku: product.sku,
         color: product.color,
-        size: product.size,
-        stock: product.stock,
         weight: product.weight,
         mrp: product.mrp,
         price: product.price,
@@ -273,27 +301,62 @@ function AddProduct(props) {
                             ) : null}
                         </div>
 
-                        <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="size" label="Size" type="text" fullWidth name='size' variant="standard"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.size}
-                            />
-                            {errors.size && touched.size ? (
-                                <span className="d-block position-absolute form-error">{errors.size}</span>
-                            ) : null}
-                        </div>
+                        <>
+                            {/* Labels for Size and Stock */}
+                            <div className='col-4' >
+                                {/* <label htmlFor={ecommerce-product-size}>Size</label> */}
+                                <label className="form-label" htmlFor={`ecommerce-product-size`}>Size</label>
+                            </div>
+                            <div className='col-4'>
+                                {/* <label htmlFor={ecommerce-product-stock}>Stock</label> */}
+                                <label className="form-label" htmlFor={`ecommerce-product-stock`}>Stock</label>
+                            </div>
 
-                        <div className="col-6 mb-3 form_field position-relative">
-                            <TextField className='m-0' margin="dense" id="stock" label="Stock" type="number" fullWidth name='stock' variant="standard"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.stock}
-                            />
-                            {errors.stock && touched.stock ? (
-                                <span className="d-block position-absolute form-error">{errors.stock}</span>
-                            ) : null}
-                        </div>
+
+                            {sizesAndStocks.map((input, index) => (
+                                <div style={{ display: 'flex', margin: '5px 0', height: '39px' }} key={index}>
+
+                                    {/* Sizes */}
+                                    <div className='col-4 mb-3' style={{ margin: "0 5px", width: '140px' }}>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id={`ecommerce-product-size-${index}`}
+                                            placeholder="Size"
+                                            name={`sizesAndStocks[${index}].size`}
+                                            aria-label="Product size"
+                                            value={input.size}
+                                            onChange={e => handleSizeChange(e, index)}
+                                            onBlur={handleBlur}
+                                            required
+                                        />
+                                        {/* {errors.sizesAndStocks?.[index]?.size && <p>{errors.sizesAndStocks[index].size}</p>} */}
+                                    </div>
+                                    {/* Stock */}
+                                    <div className='col-4 mb-3' style={{ margin: "0 5px", width: '140px' }}>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id={`ecommerce-product-stock-${index}`}
+                                            placeholder="Stock"
+                                            name={`sizesAndStocks[${index}].stock`}
+                                            aria-label="Product stock"
+                                            value={input.stock}
+                                            onChange={e => handleStockChange(e, index)}
+                                            onBlur={handleBlur}
+                                            required
+                                        />
+                                        {/* {errors.sizesAndStocks?.[index]?.stock && <p>{errors.sizesAndStocks[index].stock}</p>} */}
+                                    </div>
+                                </div>
+                            ))}
+                            {/* Add Button */}
+                            <div className="addButtonContainer">
+                                <Button className="addButton" variant="contained" onClick={handleAddSizeAndStock}>
+                                    <ArrowForwardIcon />
+                                </Button>
+                            </div>
+                        </>
 
                         <div className="col-6 mb-3 form_field position-relative">
                             <TextField className='m-0' margin="dense" id="weight" label="Weight" type="number" fullWidth name='weight' variant="standard"
