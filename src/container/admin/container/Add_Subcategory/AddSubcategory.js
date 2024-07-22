@@ -43,7 +43,7 @@ function AddSubcategory(props) {
 
     const SubcategoryValidation = yup.object({
         category_id: yup.string().required(),
-        subcategory_name: yup.string().min(2, 'Name must be at least 2 characters').matches(/^[a-zA-Z. ]+$/, "name is invalid").required('Name is a required field'),
+        subcategory_name: yup.string().min(2, 'Name must be at least 2 characters').required('Name is a required field'),
         subcategory_desc: yup.string().min(2, 'Description must be at least 2 characters').required('Description is a required field'),
         avatar: yup.array().of(yup.mixed().required()).min(1, 'At least one image is required').required('Avatar is required'),
     });
