@@ -104,7 +104,7 @@ function ShopDetail(props) {
                                             <div className="price">
                                                 <h4>${v.price}</h4>
                                             </div>
-                                            <div className="original-price">
+                                            <div className="original-price" style={{ color: 'gray' }}>
                                                 <h4>${v.mrp}</h4>
                                             </div>
                                             <div className="discount-price">
@@ -116,13 +116,85 @@ function ShopDetail(props) {
                                             <h6 className="information-heading u-s-m-b-8">Sku Information:</h6>
                                             <div className="availability">
                                                 <span>Availability:</span>
-                                                {/* {v.size.some((sizeOption) => sizeOption.stock > 0) ? (
+                                                {v.sizesAndStocks.some((sizeOption) => sizeOption.stock > 0) ? (
                                                     <span>In Stock</span>
                                                 ) : (
                                                     <span>Out of Stock</span>
-                                                )} */}
+                                                )}
                                             </div>
                                         </div>
+                                        <div className="section-5-product-variants u-s-p-y-14">
+                                            <div className="sizes u-s-m-b-11">
+                                                <span>Available Size:</span>
+                                                <div className="size-variant select-box-wrapper">
+                                                    <select className="select-box product-size">
+                                                        {
+                                                            v.sizesAndStocks.map((sizeOption, index) => (
+                                                                <option key={index}>{sizeOption.size}</option>
+                                                            ))
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="section-6-social-media-quantity-actions u-s-p-y-14">
+                                            <form action="#" className="post-form">
+                                                <div className="quick-social-media-wrapper u-s-m-b-22">
+                                                    <span>Share:</span>
+                                                    <ul className="social-media-list">
+                                                        <li>
+                                                            <a href="#">
+                                                                <i className="fab fa-facebook-f" />
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                                <i className="fab fa-twitter" />
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                                <i className="fab fa-google-plus-g" />
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                                <i className="fas fa-rss" />
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                                <i className="fab fa-pinterest" />
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div className="quantity-wrapper u-s-m-b-22">
+                                                    <span>Quantity:</span>
+                                                    <div className="quantity">
+                                                        <input
+                                                            type="text"
+                                                            className="quantity-text-field"
+                                                            value={1}
+                                                        />
+
+                                                        <a className="plus-a">
+                                                            +
+                                                        </a>
+                                                        <a className="minus-a">
+                                                            -
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div>
+
+                                                    <button className="button button-outline-secondary" type="submit">Add to cart</button>
+                                                    <button className="button button-outline-secondary far fa-heart u-s-m-l-6" />
+                                                </div>
+                                            </form>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
