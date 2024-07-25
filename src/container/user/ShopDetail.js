@@ -41,6 +41,9 @@ function ShopDetail(props) {
         setActiveImageIndex(index);
     };
 
+    const newData = filterData.filter((v) => v._id === _id);
+    console.log(newData)
+
     return (
         <div>
             <div className="page-detail u-s-p-t-80">
@@ -238,10 +241,6 @@ function ShopDetail(props) {
                                     <tr>
                                         <td>Pieces Count</td>
                                         <td>1 piece</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Occasion</td>
-                                        <td>Casual</td>
                                     </tr>
                                     <tr>
                                         <td>Shipping Weight (kg)</td>
