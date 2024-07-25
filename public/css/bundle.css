@@ -3606,6 +3606,7 @@ body {
 .section-5-product-variants .sizes div.color-variant .select-box,
 .section-5-product-variants .sizes div.size-variant .select-box {
   height: 34px;
+  width: 100px;
   font-size: 11px;
 }
 

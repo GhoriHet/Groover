@@ -202,6 +202,59 @@ function ShopDetail(props) {
                     })}
                 </div>
             </div>
+
+            <div className="row">
+                {/* <div className="col-lg-12 col-md-12 col-sm-12"> */}
+                <div className="detail-tabs-wrapper u-s-p-t-80">
+                    <div className="specification-whole-container">
+                        <div className="spec-table u-s-m-b-50">
+                            <h4 className="spec-heading">Product Information</h4>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>Main Material</td>
+                                        <td>Cotton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Color</td>
+                                        <td>Heather Grey, Black, White</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sleeves</td>
+                                        <td>Long Sleeve</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Top Fit</td>
+                                        <td>Regular</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Print</td>
+                                        <td>Not Printed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Neck</td>
+                                        <td>Round Neck</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pieces Count</td>
+                                        <td>1 piece</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Occasion</td>
+                                        <td>Casual</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shipping Weight (kg)</td>
+                                        <td>0.5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {/* </div> */}
+            </div>
+
         </div>
     );
 }
